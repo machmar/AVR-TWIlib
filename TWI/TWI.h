@@ -20,8 +20,8 @@
 #define __TWI_FREQ_250K 250
 #define __TWI_FREQ_400K 400
 
-void TWISetup(uint16_t TheFrequency);
-uint8_t TWITransmit(uint8_t TheSlaveAddress, uint8_t TheData[], uint8_t TheDataSize, bool TheRepeatedStart);
-uint8_t TWIRecieve(uint8_t TheSlaveAddress, uint8_t TheData[], uint8_t TheDataSize);
-
+void	TWI_Init(uint16_t TheFrequency);
+uint8_t	TWI_Transmit(uint8_t TheSlaveAddress, uint8_t TheData[], uint8_t TheDataSize, bool TheRepeatedStart);
+uint8_t	TWI_Recieve(uint8_t TheSlaveAddress, uint8_t TheData[], uint8_t TheDataSize);
+void	TWI_Init(uint16_t TheFrequency);
 #endif /* TWI_H_ */
