@@ -5,7 +5,7 @@
  * Author: Marek Mach
  * Library based on:
  *	ATmega datasheet (duh)
- *  https://github.com/Sovichea/avr-i2c-library
+ *	https://github.com/Sovichea/avr-i2c-library
  */ 
 
 
