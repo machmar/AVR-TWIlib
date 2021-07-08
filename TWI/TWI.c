@@ -22,7 +22,7 @@ void TWI_Init(uint16_t TheFrequency) {
 }
 
 uint8_t TWI_Start() {
-	TWCR =  (1 << TWINT) | (1 << TWEN) | (1 << TWSTA);	//send START
+	TWCR =  (1 << TWINT) | (1 << TWSTA) | (1 << TWEN);	//send START
 	
 	while (!(TWCR & (1 << TWINT)));		//wait for the TWINT flag
 	
@@ -32,7 +32,7 @@ uint8_t TWI_Start() {
 }
 
 void TWI_Stop() {
-	TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);	//send STOP
+	TWCR = (1 << TWINT) | (1 << TWSTO) | (1 << TWEN);	//send STOP
 }
 
 uint8_t TWI_WriteSLA(uint8_t TheSLA) {
@@ -59,7 +59,7 @@ uint8_t TWI_Write(uint8_t TheData) {
 
 uint8_t TWI_Read(bool TheACKReply) {
 	if (TheACKReply) {	//end with ACK
-		TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWEA);	//initialize transmission with the ACK bit
+		TWCR = (1 << TWINT) | (1 << TWEA) | (1 << TWEN);	//initialize transmission with the ACK bit
 		while (!(TWCR & (1 << TWINT)));						//wait for the TWINT flag
 		if (TW_STATUS != TW_MR_DATA_ACK) return TW_STATUS;	//check if there is an error
 	}
@@ -92,6 +92,23 @@ uint8_t TWI_Transmit(uint8_t TheSlaveAddress, uint8_t TheData[], uint8_t TheData
 	return OP_SUCCESSFUL;
 }
 
+uint8_t TWI_TransmitByte(uint8_t TheSlaveAddress, uint8_t TheData, bool TheRepeatedStart) {
+	uint8_t ErrorCode;
+	
+	ErrorCode = TWI_Start();	//send START
+	if (ErrorCode != OP_SUCCESSFUL) return ErrorCode;	//return if there is an error, otherwise carry on
+	
+	ErrorCode = TWI_WriteSLA(TheSlaveAddress << 1 | TW_WRITE);	//send slave address with the Read/Write flag
+	if (ErrorCode != OP_SUCCESSFUL) return ErrorCode;	//return if there is an error, otherwise carry on
+	
+	ErrorCode = TWI_Write(TheData); //send the data
+	if (ErrorCode != OP_SUCCESSFUL) return ErrorCode; //return if there is an error, otherwise carry on
+
+	if (!TheRepeatedStart) TWI_Stop();	//don't send STOP if TheRepeatedStart is enabled
+	
+	return OP_SUCCESSFUL;
+}
+
 uint8_t TWI_Recieve(uint8_t TheSlaveAddress, uint8_t TheData[], uint8_t TheDataSize) {
 	uint8_t ErrorCode;
 	
@@ -109,4 +126,21 @@ uint8_t TWI_Recieve(uint8_t TheSlaveAddress, uint8_t TheData[], uint8_t TheDataS
 	TWI_Stop();	//send STOP
 	
 	return OP_SUCCESSFUL;
+}
+
+uint8_t TWI_RecieveByte(uint8_t TheSlaveAddress) {
+	uint8_t ErrorCode;
+	uint8_t RecievedByte;
+	
+	ErrorCode = TWI_Start();	//send START
+	if (ErrorCode != OP_SUCCESSFUL) return 0;	//return if there is an error, otherwise carry on
+	
+	ErrorCode = TWI_WriteSLA(TheSlaveAddress << 1 | TW_READ);	//send slave address with the Read/Write flag
+	if (ErrorCode != OP_SUCCESSFUL) return 0;	//return if there is an error, otherwise carry on
+	
+	RecievedByte = TWI_Read(TW_READ_NACK);	//send a NACK to end the transmission
+	
+	TWI_Stop();	//send STOP
+	
+	return RecievedByte;
 }

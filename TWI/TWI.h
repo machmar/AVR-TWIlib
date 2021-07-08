@@ -22,6 +22,8 @@
 
 void	TWI_Init(uint16_t TheFrequency);
 uint8_t	TWI_Transmit(uint8_t TheSlaveAddress, uint8_t TheData[], uint8_t TheDataSize, bool TheRepeatedStart);
+uint8_t	TWI_TransmitByte(uint8_t TheSlaveAddress, uint8_t TheData, bool TheRepeatedStart);
 uint8_t	TWI_Recieve(uint8_t TheSlaveAddress, uint8_t TheData[], uint8_t TheDataSize);
+uint8_t TWI_RecieveByte(uint8_t TheSlaveAddress);
 
 #endif /* TWI_H_ */
