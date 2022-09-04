@@ -8,7 +8,7 @@ Thanks to the simple math, this library works with non-standard SCL frequencies 
 * Initialize the TWI with `TWI_Init(SCLFrequency)`.  
 * Use the `TWI_Transmit(SlaveAddress, Data, DataLenght, RepeatedStart)` function to send data to a slave device.  
 * * Use the `TWI_TransmitByte(slaveAddress, Data, RepeatedStart)`function to send a single byte to a slave device.  
-* Use the `TWI_Transmit(SlaveAddress, Data, DataLenght)` function to receive data from a slave device.  
+* Use the `TWI_Recieve(SlaveAddress, Data, DataLenght)` function to receive data from a slave device.  
 * * Use the `TWI_ReceiveByte(slaveAddress)`function to send a single byte to a slave device (this function returns the received data).  
     
 Macros:  
